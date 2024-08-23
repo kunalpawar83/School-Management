@@ -2,18 +2,14 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const  sequelize  = require('./utils/db.js');
+const schoolRoute = require('./routes/schoolRoute.js');
 
 const PORT = 3000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-    res.status(200).json({
-        message: "Hello World"
-    })
-});
-
+app.use("/api/schools", schoolRoute);
 sequelize.sync()
   .then(() => {
     app.listen(PORT, () => {
