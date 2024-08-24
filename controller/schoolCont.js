@@ -31,12 +31,18 @@ exports.addSchoolHandler = async (req, res) => {
 };
 
 exports.listSchoolsHandler = async (req, res) => {
-    const { latitude, longitude } = req.query;
+    const { latitude, longitude  , page ,limit } = req.query;
     if (!latitude || !longitude) {
         return res.status(400).json({ message: 'Latitude and Longitude are required.' });
     }
     try {
-        const schools = await School.findAll();
+        const pageSize = limit ? parseInt(limit) : 10;
+        const offset = (page - 1) * pageSize;
+
+        const schools = await School.findAll({  
+            limit: pageSize,
+            offset: offset
+        });
         const sortedSchools = schools.map(school => {
             const distance = calculateDistance(latitude, longitude, school.latitude, school.longitude);
             return { ...school.dataValues, distance };
