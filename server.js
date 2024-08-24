@@ -9,7 +9,7 @@ const PORT = 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use("/api/schools", schoolRoute);
+app.use("/", schoolRoute);
 sequelize.sync()
   .then(() => {
     app.listen(PORT, () => {
