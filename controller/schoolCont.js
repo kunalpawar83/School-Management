@@ -31,33 +31,37 @@ exports.addSchoolHandler = async (req, res) => {
 };
 
 exports.listSchoolsHandler = async (req, res) => {
-    const { latitude, longitude  , page ,limit } = req.query;
+    const { latitude, longitude, page = 1, limit = 10 } = req.query;
+
     if (!latitude || !longitude) {
         return res.status(400).json({ message: 'Latitude and Longitude are required.' });
     }
+
     try {
-        const pageSize = limit ? parseInt(limit) : 10;
+        const pageSize = parseInt(limit); 
         const offset = (page - 1) * pageSize;
 
         const schools = await School.findAll({  
             limit: pageSize,
             offset: offset
         });
+
         const sortedSchools = schools.map(school => {
             const distance = calculateDistance(latitude, longitude, school.latitude, school.longitude);
             return { ...school.dataValues, distance };
         }).sort((a, b) => a.distance - b.distance);
-        if(sortedSchools.length === 0){
+
+        if (sortedSchools.length === 0) {
             return res.status(404).json({ 
                 message: 'No schools found.',
             });
         }
+
         res.status(200).json(sortedSchools);
     } catch (err) {
         res.status(500).json({ message: 'Database error.', error: err.message });
     }
 };
-
 exports.deleteSchoolHandler = async (req, res) => {
     const { id } = req.params;
     if (!id) {
