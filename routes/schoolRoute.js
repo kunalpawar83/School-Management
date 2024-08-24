@@ -3,8 +3,9 @@ const router  = express.Router();
 const schoolCont = require('../controller/schoolCont');
 
 
-router.post('/addschool', schoolCont.addSchoolHandler);
-router.get('/getallschools', schoolCont.listSchoolsHandler);
+router.post('/addSchool', schoolCont.addSchoolHandler);
+router.get('/listSchools', schoolCont.listSchoolsHandler);
+router.delete('/deleteSchool/:id', schoolCont.deleteSchoolHandler);
 
 
 module.exports = router

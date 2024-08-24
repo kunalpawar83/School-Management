@@ -3,7 +3,7 @@ const School = require('../models/school.model.js');
 
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const toRad = (value) => (value * Math.PI) / 180;
-    const R = 6371; // Earth's radius in km
+    const R = 6371;
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
     const a =
@@ -47,6 +47,22 @@ exports.listSchoolsHandler = async (req, res) => {
             });
         }
         res.status(200).json(sortedSchools);
+    } catch (err) {
+        res.status(500).json({ message: 'Database error.', error: err.message });
+    }
+};
+
+exports.deleteSchoolHandler = async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        return res.status(400).json({ message: 'School ID is required.' });
+    }
+    try {
+        if(await School.count({ where: { id } }) === 0) {
+            return res.status(404).json({ message: 'School not found.' });
+        }
+        await School.destroy({ where: { id } });
+        res.status(200).json({ message: 'School deleted successfully.' });
     } catch (err) {
         res.status(500).json({ message: 'Database error.', error: err.message });
     }

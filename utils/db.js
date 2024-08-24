@@ -9,7 +9,7 @@ const database_port = process.env.DB_PORT;
 
 const sequelize = new Sequelize(database_name, username, password, {
     host:database_host,
-    dialect: 'mysql',  // 'mysql' | 'mariadb' | 'postgres' | 'mssql',
+    dialect: 'mysql',
     port:database_port
   });
 
